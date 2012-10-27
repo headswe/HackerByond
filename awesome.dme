@@ -1,0 +1,35 @@
+// DM Environment file for awesome.dme.
+// All manual changes should be made outside the BEGIN_ and END_ blocks.
+// New source code should be placed in .dm files: choose File/New --> Code File.
+
+// BEGIN_INTERNALS
+// END_INTERNALS
+
+// BEGIN_FILE_DIR
+#define FILE_DIR .
+#define FILE_DIR "hacker"
+#define FILE_DIR "hacker/computer"
+#define FILE_DIR "hacker/computer/commands"
+#define FILE_DIR "hacker/files"
+#define FILE_DIR "hacker/network"
+#define FILE_DIR "hacker/server"
+// END_FILE_DIR
+
+// BEGIN_PREFERENCES
+#define DEBUG
+// END_PREFERENCES
+
+// BEGIN_INCLUDE
+#include "hacker\scripting.dm"
+#include "hacker\interaface.dmf"
+#include "hacker\computer\commands.dm"
+#include "hacker\computer\def.dm"
+#include "hacker\computer\hacker.dm"
+#include "hacker\computer\mob.dm"
+#include "hacker\computer\users.dm"
+#include "hacker\computer\commands\command.dm"
+#include "hacker\files\files.dm"
+#include "hacker\network\network.dm"
+#include "hacker\server\server.dm"
+// END_INCLUDE
+
