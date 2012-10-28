@@ -123,7 +123,7 @@ mob/verb/closeconsoleV()
 	hide_console()
 proc/send_packet(var/obj/device, var/dest_address, var/datum/function/F)
 	// for laptops, try to find a connection
-	if(istype(device,/obj/item/weapon/laptop))
+	if(istype(device,/obj/item/laptop))
 		if(!device:R || !(device:R in device:get_routers()) )
 			if(device:R)
 				device:R.disconnect(device)

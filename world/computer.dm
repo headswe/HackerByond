@@ -1,5 +1,4 @@
 obj/device
-	proc/OnMobUse(mob)
 obj/device/Computer
 	name = "Computer"
 	icon = 'player.dmi'
@@ -17,3 +16,11 @@ obj/device/Click(location,control,params)
 obj/item
 
 
+/proc/reverse_dir_3d(dir)
+	var/ndir = (dir&NORTH)?SOUTH : 0
+	ndir |= (dir&SOUTH)?NORTH : 0
+	ndir |= (dir&EAST)?WEST : 0
+	ndir |= (dir&WEST)?EAST : 0
+	ndir |= (dir&UP)?DOWN : 0
+	ndir |= (dir&DOWN)?UP : 0
+	return ndir

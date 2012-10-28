@@ -1,4 +1,4 @@
-obj/item/weapon/laptop
+obj/item/laptop
 	name = "Laptop"
 	icon = 'laptop.dmi'
 	icon_state = "laptop_0"
@@ -8,7 +8,7 @@ obj/item/weapon/laptop
 	var/address
 	var/obj/machinery/router/R
 
-obj/item/weapon/laptop/New()
+obj/item/laptop/New()
 	..()
 	address = 0
 	OS = new(src)
@@ -17,12 +17,12 @@ obj/item/weapon/laptop/New()
 //		sleep(10) / You don't want to do this like this.
 //		process()
 
-/obj/item/weapon/laptop/proc/get_routers()
+/obj/item/laptop/proc/get_routers()
 	. = list()
 	for(var/obj/machinery/router/R in range(20,src.loc))
 		. += R
 	return .
-obj/item/weapon/laptop/proc/receive_packet(var/obj/machinery/sender, var/datum/function/P)
+obj/item/laptop/proc/receive_packet(var/obj/machinery/sender, var/datum/function/P)
 	if(P.name == "response")
 		OS.receive_message(P.arg1)
 	if(P.name == "MSG")
@@ -37,9 +37,9 @@ obj/item/weapon/laptop/proc/receive_packet(var/obj/machinery/sender, var/datum/f
 		R.destination_id = P.source_id
 		receive_packet(src, R)
 
-obj/item/weapon/laptop/proc/updateicon()
+obj/item/laptop/proc/updateicon()
 	icon_state = "laptop_[on]"
-obj/item/weapon/laptop/attack_self(mob/user as mob)
+obj/item/laptop/attack_self(mob/user as mob)
 	if(!on)
 		on = 1
 		user.display_console(src)
@@ -48,7 +48,7 @@ obj/item/weapon/laptop/attack_self(mob/user as mob)
 		on = 0
 		return
 		// DO MORE SHIT HERE
-obj/item/weapon/laptop/process()
+obj/item/laptop/process()
 //	world << "LAPTOP TICK"
 	if(console_user) if(!(console_user in range(1,src.loc)) || winget(console_user.client, "console", "is-visible") == "false")
 		console_user.hide_console()
@@ -56,7 +56,7 @@ obj/item/weapon/laptop/process()
 		for(var/mob/A in OS.mob_users)
 			if(!(A in range(1,src)) || winget(A.client, "console", "is-visible") == "false")
 				A.hide_console()
-obj/item/weapon/laptop/verb/reboot()
+obj/item/laptop/verb/reboot()
 	set name = "Reboot"
 	set src in view(1)
 	OS.reboot()

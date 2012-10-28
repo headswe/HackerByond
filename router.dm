@@ -85,7 +85,7 @@ var/global/first_free_address_range = 1
 			R.arg1 = ""
 			var/list/passes = list()
 			for(var/obj/M in connected) if(istype(M,tp))
-				if(istype(M,/obj/item/weapon/laptop))
+				if(istype(M,/obj/item/laptop))
 					if(M:OS:name != "ThinkThank")
 						R.arg1 += "[ip2text(M:address)]\t[M:OS:name]\n"
 					else
@@ -127,7 +127,7 @@ var/global/first_free_address_range = 1
 		R.name = "response"
 		R.arg1 = ""
 		for(var/obj/M in connected) if(istype(M,tp))
-			if(istype(M,/obj/item/weapon/laptop))
+			if(istype(M,/obj/item/laptop))
 				if(M:OS:name != "ThinkThank")
 					R.arg1 += "[ip2text(M:address)]\t[M:OS:name]\n"
 				else
