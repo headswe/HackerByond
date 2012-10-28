@@ -6,64 +6,37 @@ mob
 	var/obj/console_device
 mob/verb/cmd(msg as text)
 	set hidden = 1
-	src.comp.command(msg,src)
+	src.current.command(msg,src)
 /datum/os/
-	var/name = "ThinkThank"
-	var/datum/dir/pwd
-	var/datum/dir/root = new("root")
-	var/datum/dir/dldir
-	var/list/commands = list()
-	var/datum/os/connected
-	var/list/users = list()
-	var/stopprog = 0
-//	var/motd = "Welcome to the server"
-	var/list/owner = list()
-	var/cmdoverride = 0
-	var/input = null
-	var/network = 0
-	var/list/clients = list()
-	var/list/copy = list()
-	var/auth = 1
-	var/boot = 0
-	var/ip = null
-	var/list/packets = list()
-	var/list/process = list()
-	var/datum/packet/latepacket
-	var/datum/user/connectedas
+	var/name = "ThinkThank" // Name?
+	var/datum/dir/pwd	// Current location in the directory tree
+	var/datum/dir/root = new("root") // Root directory
+	var/datum/dir/dldir // Download dir to put files from remote host //TODO:ALLOW SPECFICY INSTEAD
+	var/list/commands = list() // Contains a named list of all commands
+	var/datum/os/connected // OS that were connecting too.
+	var/list/mob_users = list()
+	var/force_stop = 0 // Set to one to force stop all proceses...
+	var/list/users // Current users.
+	var/cmdoverride = 0 // When a process is has taken control of input
+	var/input = null // Last input while under override
+	var/network = 0 // If we have networking
+	var/list/clients = list() // Clients connected??(No clue)
+	var/list/copy = list() // Copy buffer
+	var/auth = 1 // Authed???
+	var/boot = 0 // Booted?
+	var/ip = null // IP
+	var/list/packets = list() // packets
+	var/list/process = list() // current process
+	var/datum/user/connectedas // what users you are connected as
 	var/list/hostnames = list()
 	var/datum/user/user = new("root","password")
 	var/list/tasks = list()
 	var/list/config = list("webserver" = 0,motd = "Welcome to the server")
-	var/helptext = {"
-	Commands:
-	mkdir,Create directories,mkdir dirname
-	dir,display current dir conents
-	cd,move into a directiory,cd filename
-	pwd,show current directory"
-	make,make a file,make filename"
-	cat,add to a file,cat filename"
-	read,read a file ,read filename"
-	rm,delete file/dir,rm dir/filename
-	mv,move file/dir,mv file where
-	connect,connect to a server,connect ip
-	disconnect,disconnect...
-	run,run a program
-	prase,prase a program
-	chmod RW username file/dirname
-	user list
-	user add name pass
-	user remove name
-	user modify name old password new password
-	passwd, change your password, passwd newpass
-	Copy,Adds a file into the copy buffer
-	Paste,Pastes all the files in the copy buffer and clears it
-	vi, Text editor , vi filename
-	"}
 /datum/os/Del()
 	for(var/datum/praser/P in process)
 		del(P)
-	for(var/mob/A in owner)
-		owner -= A
+	for(var/mob/A in mob_users)
+		mob_users -= A
 	..()
 /datum/os/New(mob/A)
 	pwd = root
@@ -81,10 +54,10 @@ mob/verb/cmd(msg as text)
 	X.permissions[user.name] = RW
 	root.permissions[user.name] = RW
 	X.owned = A
-	var/C = new /datum/command/dir(src)
-	src.commands["dir"] =  C
-	src.commands["ls"] = C
-	src.commands["help"] = new /datum/command/help(src)
+	for(var/com_type in typesof (/datum/command))
+		var/datum/command/com = new com_type(src)
+		for(var/name in com.names)
+			src.commands[name] = com
 /datum/os/proc/GetInput()
 	set background=1
 	src.cmdoverride = 1
@@ -111,5 +84,5 @@ mob/verb/cmd(msg as text)
 			return Y
 
 /datum/os/proc/Message(var/msg)
-	for(var/mob/A in src.owner)
-		A << msg
+	for(var/mob/A in src.mob_users)
+		A.client << output(msg, "console.text")

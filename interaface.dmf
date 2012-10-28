@@ -1,43 +1,52 @@
 macro "macro"
 	elem 
-		name = "North+REP"
-		command = ".north"
+		name = "CENTER+REP"
+		command = ".center"
 		is-disabled = false
 	elem 
-		name = "South+REP"
-		command = ".south"
-		is-disabled = false
-	elem 
-		name = "East+REP"
-		command = ".east"
-		is-disabled = false
-	elem 
-		name = "West+REP"
-		command = ".west"
-		is-disabled = false
-	elem 
-		name = "Northeast+REP"
+		name = "NORTHEAST+REP"
 		command = ".northeast"
 		is-disabled = false
 	elem 
-		name = "Northwest+REP"
-		command = ".northwest"
-		is-disabled = false
-	elem 
-		name = "Southeast+REP"
+		name = "SOUTHEAST+REP"
 		command = ".southeast"
 		is-disabled = false
 	elem 
-		name = "Southwest+REP"
+		name = "SOUTHWEST+REP"
 		command = ".southwest"
 		is-disabled = false
 	elem 
-		name = "Center+REP"
-		command = ".center"
+		name = "NORTHWEST+REP"
+		command = ".northwest"
+		is-disabled = false
+	elem 
+		name = "WEST+REP"
+		command = ".west"
+		is-disabled = false
+	elem 
+		name = "NORTH+REP"
+		command = ".north"
+		is-disabled = false
+	elem 
+		name = "EAST+REP"
+		command = ".east"
+		is-disabled = false
+	elem 
+		name = "SOUTH+REP"
+		command = ".south"
 		is-disabled = false
 
 
 menu "menu"
+	elem 
+		name = "&File"
+		command = ""
+		category = ""
+		is-checked = false
+		can-check = false
+		group = ""
+		is-disabled = false
+		saved-params = "is-checked"
 	elem 
 		name = "&Quit"
 		command = ".quit"
@@ -49,11 +58,102 @@ menu "menu"
 		saved-params = "is-checked"
 
 
+window "console"
+	elem "console"
+		type = MAIN
+		pos = 281,0
+		size = 640x480
+		anchor1 = none
+		anchor2 = none
+		font-family = ""
+		font-size = 0
+		font-style = ""
+		text-color = #000000
+		background-color = none
+		is-visible = false
+		is-disabled = false
+		is-transparent = false
+		is-default = false
+		border = none
+		drop-zone = false
+		right-click = false
+		saved-params = "pos;size;is-minimized;is-maximized"
+		on-size = ""
+		title = ""
+		titlebar = true
+		statusbar = false
+		can-close = true
+		can-minimize = true
+		can-resize = true
+		is-pane = false
+		is-minimized = false
+		is-maximized = false
+		can-scroll = none
+		icon = ""
+		image = ""
+		image-mode = stretch
+		keep-aspect = false
+		transparent-color = none
+		alpha = 255
+		macro = ""
+		menu = ""
+		on-close = ""
+	elem "input1"
+		type = INPUT
+		pos = 0,450
+		size = 645x30
+		anchor1 = 0,94
+		anchor2 = 100,100
+		font-family = ""
+		font-size = 0
+		font-style = ""
+		text-color = #ffffff
+		background-color = #000000
+		is-visible = true
+		is-disabled = false
+		is-transparent = false
+		is-default = false
+		border = none
+		drop-zone = false
+		right-click = false
+		saved-params = ""
+		on-size = ""
+		command = "cmd"
+		multi-line = false
+		is-password = false
+		no-command = false
+	elem "text"
+		type = OUTPUT
+		pos = 0,0
+		size = 640x450
+		anchor1 = 0,0
+		anchor2 = 100,94
+		font-family = "monospace"
+		font-size = 2
+		font-style = ""
+		text-color = #ffffff
+		background-color = #000000
+		is-visible = true
+		is-disabled = false
+		is-transparent = false
+		is-default = false
+		border = none
+		drop-zone = false
+		right-click = false
+		saved-params = "max-lines"
+		on-size = ""
+		link-color = #0000ff
+		visited-color = #ff00ff
+		style = ""
+		enable-http-images = false
+		max-lines = 1000
+		image = ""
+
 window "default"
 	elem "default"
 		type = MAIN
 		pos = 281,0
-		size = 640x480
+		size = 699x480
 		anchor1 = none
 		anchor2 = none
 		font-family = ""
@@ -89,17 +189,17 @@ window "default"
 		macro = "macro"
 		menu = "menu"
 		on-close = ""
-	elem "input1"
+	elem "input2"
 		type = INPUT
 		pos = 0,450
-		size = 630x30
+		size = 495x30
 		anchor1 = none
 		anchor2 = none
 		font-family = ""
 		font-size = 0
 		font-style = ""
-		text-color = #ffffff
-		background-color = #000000
+		text-color = #000000
+		background-color = #ffffff
 		is-visible = true
 		is-disabled = false
 		is-transparent = false
@@ -109,21 +209,52 @@ window "default"
 		right-click = false
 		saved-params = ""
 		on-size = ""
-		command = "cmd"
+		command = ""
 		multi-line = false
 		is-password = false
 		no-command = false
-	elem "output1"
-		type = OUTPUT
-		pos = 0,0
-		size = 630x450
+	elem "info1"
+		type = INFO
+		pos = 495,0
+		size = 200x120
 		anchor1 = none
 		anchor2 = none
-		font-family = "monospace"
+		font-family = ""
 		font-size = 0
 		font-style = ""
-		text-color = #ffffff
-		background-color = #000000
+		text-color = #000000
+		background-color = #ffffff
+		is-visible = true
+		is-disabled = false
+		is-transparent = false
+		is-default = false
+		border = none
+		drop-zone = true
+		right-click = false
+		saved-params = ""
+		on-size = ""
+		highlight-color = #00ff00
+		tab-text-color = #000000
+		tab-background-color = none
+		tab-font-family = ""
+		tab-font-size = 0
+		tab-font-style = ""
+		allow-html = true
+		multi-line = true
+		on-show = ""
+		on-hide = ""
+		on-tab = ""
+	elem "output1"
+		type = OUTPUT
+		pos = 495,115
+		size = 200x365
+		anchor1 = none
+		anchor2 = none
+		font-family = ""
+		font-size = 0
+		font-style = ""
+		text-color = #000000
+		background-color = #ffffff
 		is-visible = true
 		is-disabled = false
 		is-transparent = false
@@ -139,4 +270,29 @@ window "default"
 		enable-http-images = false
 		max-lines = 1000
 		image = ""
+	elem "map1"
+		type = MAP
+		pos = 0,-7
+		size = 495x457
+		anchor1 = none
+		anchor2 = none
+		font-family = ""
+		font-size = 0
+		font-style = ""
+		text-color = none
+		background-color = none
+		is-visible = true
+		is-disabled = false
+		is-transparent = false
+		is-default = true
+		border = none
+		drop-zone = true
+		right-click = false
+		saved-params = "icon-size"
+		on-size = ""
+		icon-size = 0
+		text-mode = false
+		on-show = ""
+		on-hide = ""
+		style = ""
 

@@ -1,0 +1,32 @@
+"a" = (/turf,/area)
+"b" = (/obj/wall{tag = "icon-s-e"; icon_state = "s-e"},/turf,/area)
+"c" = (/obj/wall,/turf,/area)
+"d" = (/obj/wall{tag = "icon-wall (NORTHEAST)"; icon_state = "wall"; dir = 5},/turf,/area)
+"e" = (/obj/wall{tag = "icon-wall (EAST)"; icon_state = "wall"; dir = 4},/turf,/area)
+"f" = (/obj/device/Computer,/turf,/area)
+"g" = (/obj/wall{tag = "icon-wall (SOUTHWEST)"; icon_state = "wall"; dir = 10},/turf,/area)
+"h" = (/obj/wall{tag = "icon-wall (NORTH)"; icon_state = "wall"; dir = 1},/turf,/area)
+"i" = (/obj/wall{tag = "icon-wall (SOUTHEAST)"; icon_state = "wall"; dir = 6},/turf,/area)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaabcccccdaaaaaaaaaa
+aaaeaafaaeaaaaaaaaaa
+aaaeaaaaaeaaaaaaaaaa
+aaaeaaaaaeaaaaaaaaaa
+aaaeaaaaaeaaaaaaaaaa
+aaaeaaaaaeaaaaaaaaaa
+aaaeaaaaaeaaaaaaaaaa
+aaaeaaaaaeaaaaaaaaaa
+aaaghhahhiaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaa
+"}

@@ -90,7 +90,7 @@ proc/setupnetwork() //  use this if you need create something at the start of th
 	if(!operating_system)
 		operating_system = new(src)
 	user.comp = operating_system
-	operating_system.owner += user
+	operating_system.mob_users += user
 	operating_system.Boot()
 
 /obj/machinery/computer/process()
@@ -98,7 +98,7 @@ proc/setupnetwork() //  use this if you need create something at the start of th
 		if(!(console_user in range(1,src)) || winget(console_user, "console", "is-visible") == "false")
 			console_user.hide_console()
 	if(operating_system)
-		for(var/mob/A in operating_system.owner)
+		for(var/mob/A in operating_system.mob_users)
 			if(!(A in range(1,src)) || winget(A.client, "console", "is-visible") == "false")
 				A.hide_console()
 mob/proc/display_console(var/obj/device)
@@ -106,7 +106,7 @@ mob/proc/display_console(var/obj/device)
 	device:console_user = src
 	src.comp = device:OS
 	src.console_device = device
-	device:OS.owner += src
+	device:OS.mob_users += src
 	if(!device:OS.boot)
 		device:OS.ip = device:address
 		device:OS.Boot()
@@ -115,7 +115,7 @@ mob/proc/hide_console()
 	if(src.console_device)
 		winshow(src, "console", 0)
 		src.comp = null
-		src.console_device:OS:owner -= src
+		src.console_device:OS:mob_users -= src
 		if(console_device:console_user == src)
 			src.console_device:console_user = null
 		src.console_device = null
