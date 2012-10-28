@@ -53,7 +53,7 @@ datum/os/server/Boot()
 		for(var/datum/user/C in users)
 			if(C.name == username)
 				if(C.password == password)
-				//	client.owner << "Aceepted.."
+				//	client.mob_users << "Aceepted.."
 					return C.name
 		return 0
 	Message("Username:")
@@ -65,7 +65,7 @@ datum/os/server/Boot()
 	for(var/datum/user/C in users)
 		if(C.name == username)
 			if(C.password == password)
-			//	client.owner << "Aceepted.."
+			//	client.mob_users << "Aceepted.."
 				return C.name
 	return 0
 

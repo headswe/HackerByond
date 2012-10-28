@@ -21,7 +21,7 @@
 	return 0
 /datum/os/proc/MkDir(var/path)
 	if(FindAny(path))
-		src.owner << "There is already a directory/file with the same name"
+		src.mob_users << "There is already a directory/file with the same name"
 		return
 	var/perm = src.pwd.CheckPermissions(src)
 	if(perm != RW && perm != W)
@@ -394,7 +394,7 @@ datum/os/proc/testpraser(var/N)
 		Message("IP:[connected.ip]")
 		if(connected.hostnames.len >= 1)
 			for(var/A in connected.hostnames)
-				src.owner << "HOSTNAME:[A]"
+				src.mob_users << "HOSTNAME:[A]"
 	else
 		Message("IP:[src.ip]")
 		if(hostnames.len >= 1)
@@ -464,18 +464,18 @@ datum/os/proc/testpraser(var/N)
 		return
 	if(!connected)
 		src.user.password = A
-		src.owner << "Password changed..."
+		Message("Password changed...")
 datum/os/proc/Chmod(X,UN,DN)
 	if(!IsRoot())
-		src.owner << "You need to be root"
+		src.mob_users << "You need to be root"
 		return
 	var/datum/dir/D = FindAny(DN)
 	if(!D)
-		src.owner << "Can't find a file named [DN]"
+		src.mob_users << "Can't find a file named [DN]"
 		return
 	var/Y = Right2Num(X)
 	D.permissions[UN] = Y
-	src.owner << "[UN] has been given [X] rights to [DN]"
+	src.mob_users << "[UN] has been given [X] rights to [DN]"
 
 datum/os/proc/Right2Num(X)
 	if(X == "R")
@@ -497,16 +497,16 @@ datum/os/proc/Copy(Y)
 	if(Y == "*")
 		for(var/datum/dir/X in pwd.contents)
 			copy += X
-			src.owner << "Added [X.name] into the copy list"
+			src.mob_users << "Added [X.name] into the copy list"
 		return
 	var/datum/dir/X = FindAny(Y)
 	if(X)
 		copy += X
-		src.owner << "Added [X.name] into the copy list"
+		src.mob_users << "Added [X.name] into the copy list"
 
 datum/os/proc/Paste()
 	if(copy.len <= 0)
-		src.owner << "Nothing to paste.."
+		src.mob_users << "Nothing to paste.."
 		return
 	var/pasted = 0
 	var/notpasted = 0
@@ -597,7 +597,7 @@ datum/os/proc/BGLIST()
 		if(tasks.len <= 0)
 			return
 		for(var/datum/dir/file/program/X in src.tasks)
-			src.owner << X.name
+			src.mob_users << X.name
 datum/os/proc/process()
 	for(var/datum/dir/file/program/X in src.tasks)
 		if(!X.running)

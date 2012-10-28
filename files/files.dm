@@ -9,11 +9,11 @@ datum/dir/file
 	name = "file"
 	contents = ""
 
-datum/dir/New(namez,var/datum/dir/H)
+datum/dir/New(namez,var/datum/dir/loc)
 	src.name = namez
 	src.permissions["root"] = RW
-	if(H)
-		src.holder = H
+	if(loc)
+		src.holder = loc
 		makepath()
 datum/dir/proc/makepath()
 	var/done = 1
@@ -36,7 +36,6 @@ datum/dir/proc/makepath()
 	else
 		paths = "/[src.name]"
 	src.path = paths
-	// << paths
 datum/dir/file/program
 	name = "program"
 	var/progname = "test"
@@ -140,14 +139,7 @@ datum/dir/file/program/proc/Stop(var/datum/os/client)
 	running = 0
 datum/os
 	var/getnextpacket = 0
-datum/os/proc/GetPacket()
-	while(getnextpacket)
-		if(latepacket)
-			var/datum/packet/P = src.latepacket
-			latepacket = null
-			return P
-		else
-			sleep(10)
+
 //datum/os/proc/SendPacket(
 
 /*
@@ -163,7 +155,7 @@ datum/dir/file/program/proc/ForwardPacket(var/datum/packet/P) // when the client
 
 
 //////////Client//////////////
-client.owner == player
+client.mob_users == player
 client.pwd == current dir
 client.GetInput() // returns a string typed in by the user.
 FindAny(Name) = Find any files in PWD

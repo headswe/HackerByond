@@ -34,9 +34,9 @@ var/global/first_free_address_range = 1
 		if(!(console_user in range(1,src)) || winget(console_user, "console", "is-visible") == "false")
 			console_user.hide_console()
 	if(OS)
-		for(var/mob/A in OS.owner)
+		for(var/mob/A in OS.mob_users)
 			if(!A)
-				OS.owner -= A
+				OS.mob_users -= A
 				continue
 			if(!(A in range(1,src)) || winget(A.client, "console", "is-visible") == "false")
 				A.hide_console()
@@ -85,7 +85,7 @@ var/global/first_free_address_range = 1
 			R.arg1 = ""
 			var/list/passes = list()
 			for(var/obj/M in connected) if(istype(M,tp))
-				if(istype(M,/obj/item/weapon/laptop))
+				if(istype(M,/obj/item/laptop))
 					if(M:OS:name != "ThinkThank")
 						R.arg1 += "[ip2text(M:address)]\t[M:OS:name]\n"
 					else
@@ -127,7 +127,7 @@ var/global/first_free_address_range = 1
 		R.name = "response"
 		R.arg1 = ""
 		for(var/obj/M in connected) if(istype(M,tp))
-			if(istype(M,/obj/item/weapon/laptop))
+			if(istype(M,/obj/item/laptop))
 				if(M:OS:name != "ThinkThank")
 					R.arg1 += "[ip2text(M:address)]\t[M:OS:name]\n"
 				else
