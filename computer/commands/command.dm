@@ -12,8 +12,9 @@
 
 /datum/command/dir
 	names = list("dir","ls")
+	help_text = "Lists contents of the current directory."
 
-/datum/command/dir/Run(args)
+/datum/command/dir/Run(var/list/args)
 	var/count = 1
 	var/text
 	for(var/datum/dir/D in source.pwd.contents)
@@ -35,7 +36,8 @@
 //Help command, lists all registered commands//
 
 /datum/command/help
-	names = list("help")
+	names = list("help", "man")
+	help_text = "help \[CMD\]: Lists all registered commands on the current computer, alternately displays help for command CMD."
 
 /datum/command/help/Run(var/list/args)
 	if(args.len == 0)
@@ -45,8 +47,7 @@
 			var/datum/command/com = source.commands[A]
 			if(com in done_com)
 				continue
-			for(var/name in com.names)
-				text += name+" "
+			text += com.names[1] + " "
 			text += "\n"
 			done_com += com
 		source.Message(text)
@@ -60,12 +61,37 @@
 //End help//
 
 
+//aliases, lists all alternate names for a command//
+
+/datum/command/aliases
+	names = list("aliases")
+	help_text = "help {CMD}: Lists all aliases for command CMD."
+
+/datum/command/aliases/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	if(source.commands[args[1]])
+		var/datum/command/A = source.commands[args[1]]
+		source.Message("Aliases for command [args[1]]:")
+		for(var/n in A.names)
+			source.Message("  " + n)
+	else
+		source.Message("Command [args[1]] not found.")
+		return
+
+//End aliases
+
+
 //mkdir, creates a dir with name derieved from the arguments//
 
 /datum/command/mkdir
 	names = list("mkdir")
+	help_text = "mkdir {NAME}: Creates a directory in the current directory with name NAME."
 
 /datum/command/mkdir/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
 	if(source.FindAny(args[1]))
 		source.Message("There is already a directory or file with the same name")
 		return
@@ -85,10 +111,12 @@
 
 /datum/command/mv
 	names = list("mv","move")
+	help_text = "mv {PATH1} {PATH2}: Moves file or directory at PATH1 into PATH2."
 
 /datum/command/mv/Run(var/list/args)
 	if(args.len != 2)
-		source.Message("Missing or excess argument")
+		source.Message("Invalid number of arguments.")
+		return
 		return
 	var/datum/dir/X = source.FindAny(args[1])
 	var/datum/dir/Y = source.FindDir(args[2])
@@ -102,21 +130,33 @@
 	return
 
 //End mv//
-/*datum/os/proc/reboot()
-	boot = 0
-	for(var/datum/praser/P in src.process)
-		del(P)
-	Boot()*/
 
-//Config, changes value of first arguement in system config to second argument.
 
-/datum/command/config
+//reboot, re... boots?  Kinda self explanatory//
+
+/datum/command/reboot
+	names = list("reboot","restart")
+	help_text = "reboot: Reboots the current computer."
+
+/datum/command/reboot/Run(var/list/args)
+	source.boot = 0
+	for(var/datum/praser/pars in source.process)
+		del(pars)
+	source.Boot()
+
+//End reboot//
+
+
+//Config, changes value of first argument in system config to second argument.
+
+/datum/command/cfg
 	names = list("cfg","config")
+	help_text = "cfg {KEY} {DATA}: Sets KEY in system config to DATA."
 
-/datum/command/config/Run(var/list/args)
+/datum/command/cfg/Run(var/list/args)
 	if(args[1] == "name" && args.len == 2)
 		source.name = args[2]
-		source.Message("Changed network name to [args[2]]")
+		source.Message("Changed network name to [args[2]].")
 
 //End config//
 
@@ -124,6 +164,7 @@
 
 /datum/command/pwd
 	names = list("pwd")
+	help_text = "pwd: Prints the path of the current directory."
 
 /datum/command/pwd/Run(var/list/args)
 	var/list/dirs = list()
@@ -169,8 +210,12 @@
 
 /datum/command/run
 	names = list("run","exec")
+	help_text = "run {PATH}: Runs the program at PATH."
 
 /datum/command/run/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
 	var/N = args[1]
 	if(findtext(N,"/",1,0)) // ITS A PATH
 		var/datum/dir/start
@@ -218,8 +263,12 @@
 
 /datum/command/cd
 	names = list("cd")
+	help_text = "cd {PATH}: Switches to the directory at PATH."
 
 /datum/command/cd/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
 	if(args[1] == ".." && source.pwd.holder)
 		source.pwd = source.pwd.holder
 	else if(findtext(args[1],"/",1,0)) // ITS A PATH
@@ -262,8 +311,12 @@
 
 /datum/command/html
 	names = list("html","parsehtml")
+	help_text = "html {FILE}: Parses the HTML file at FILE."
 
 /datum/command/html/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
 	var/datum/dir/file/F = source.FindFile(args[1])
 	if(!F)
 		return
@@ -308,9 +361,7 @@
 		newtext += NA
 	source.Message(newtext)
 
-//End parsehtml//
-
-/*/datum/os/Topic(href,href_list[],hsrc)
+/datum/os/Topic(href,href_list[],hsrc)
 	if(1)
 		if(!usr)
 			return
@@ -320,60 +371,113 @@
 			if(!X)
 				return
 			C.showhtml(X)
-/datum/os/proc/cat(var/N)
-	var/datum/dir/file/X = FindFile(N)
+
+//End parsehtml//
+
+
+//append, appends text to the end of a file//
+
+/datum/command/append
+	names = list("append")
+	help_text = "append {FILE}: Appends inputted text to the end of FILE."
+
+/datum/command/append/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/datum/dir/file/X = source.FindFile(args[1])
 	if(X)
 		var/perm = X.CheckPermissions(src)
 		if(perm < R)
-			Message("You are not authorized to do that..")
+			source.Message("You are not authorized to do that.")
 			return
-		Message("Type the line to append")
-		var/text = GetInput()
+		source.Message("Enter the line to append:")
+		var/text = source.GetInput()
 		text = copytext(text,1,0)
 		X.contents += "\n[text]"
 	else
-		Message("Error no file named [N]")
-/datum/os/proc/vi(var/N,mob/user)
-	var/datum/dir/file/X = FindFile(N)
+		source.Message("Error: No file named [args[1]].")
+
+//End cat//
+
+
+//vi!  Edits text//
+
+/datum/command/vi
+	names = list("vi","vim","nano","pico","ed","emacs","edit")
+	help_text = "vi {FILE}: Opens a text editor for file FILE."
+
+/datum/command/vi/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/datum/dir/file/X = source.FindFile(args[1])
 	if(X)
-		var/perm = X.CheckPermissions(src)
+		var/perm = X.CheckPermissions(source)
 		if(perm < W)
-			Message("You are not authorized to do that..")
+			source.Message("You are not authorized to do that.")
 			return
 		var/text = X.contents
-		X.contents = input(user,"VI","VI",text) as message
+		X.contents = input(source.user,"VI","VI",text) as message
 	else
-		if(FindDir(N))
-			Message("[N] is a directory")
+		if(source.FindDir(args[1]))
+			source.Message("[args[1]] is a directory")
 			return
-		else if(FindProg(N))
-			Message("[N] is a program")
+		else if(source.FindProg(args[1]))
+			source.Message("[args[1]] is a program")
 			return
 		else
-			Message("File does not exist")
-/datum/os/proc/read(var/N)
-	var/datum/dir/file/X = FindFile(N)
+			source.Message("File does not exist")
+			return
+
+//End vi//
+
+
+//cat, reads the contents of a file to the screen//
+
+/datum/command/cat
+	names = list("cat","read","type")
+	help_text = "cat {FILE}: Prints the contents of file FILE to the screen."
+
+/datum/command/cat/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/datum/dir/file/X = source.FindFile(args[1])
 	if(X)
-		var/perm = X.CheckPermissions(src)
+		var/perm = X.CheckPermissions(source)
 		if(perm != R && perm != RW )
-			Message("You are not authorized to do that..")
+			source.Message("You are not authorized to do that..")
 			return
-		Message(X.contents)
+		source.Message(X.contents)
 	else
-		Message("Error no file named [N]")
-/datum/os/proc/rm(var/B)
-	var/datum/dir/current = src.pwd
-	var/N = B
+		source.Message("Error no file named [args[1]].")
+
+//End cat//
+
+
+//rm, removes file//
+
+/datum/command/rm
+	names = list("rm","del","delete")
+	help_text = "rm {PATH}: Removes file with path PATH."
+
+/datum/command/rm/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/datum/dir/current = source.pwd
+	var/N = args[1]
 	if(findtext(N,"/",1,0)) // ITS A PATH
 		var/datum/dir/start
 		var/done = 1
 		var/list/D = list()
 		if(findtext(N,"/",1,2))
-			start = root
+			start = source.root
 			N = copytext(N,2,0)
 		else
-			start = src.pwd
-		while(done)
+			start = source.pwd
+		while(!done)
 			var/loc1 = findtext(N,"/",1,0)
 			if(!loc1)
 				var/Y = copytext(N,1,0)
@@ -386,44 +490,57 @@
 		var/count = 0
 		for(var/A in D)
 			count++
-			src.pwd = start
+			source.pwd = start
 			if(count == D.len)
-				B = A
+				N = A
 				break
-			start = FindDir(A)
-		src.pwd = start
-	if(B == "*")
-		for(var/datum/dir/A in pwd.contents)
-			var/perm = A.CheckPermissions(src)
+			start = source.FindDir(A)
+		source.pwd = start
+	if(N == "*")
+		for(var/datum/dir/A in source.pwd.contents)
+			var/perm = A.CheckPermissions(source)
 			if(perm != RW)
-				Message("You are not authorized to do that..")
+				source.Message("You are not authorized to do that.")
 				return
-			Message("Deleted [A.name]..")
+			source.Message("Deleted [A.name].")
 			del(A)
-		src.pwd = current
+		source.pwd = current
 		return
-	var/datum/dir/X = FindAny(B)
+	var/datum/dir/X = source.FindAny(N)
 	if(X)
-		var/perm = X.CheckPermissions(src)
+		var/perm = X.CheckPermissions(source)
 		if(perm != RW)
-			Message("You are not authorized to do that..")
+			source.Message("You are not authorized to do that.")
 			return
-		Message("Deleted [X.name]..")
+		source.Message("Deleted [X.name].")
 		del(X)
-		src.pwd = current
+		source.pwd = current
 		return
-/datum/os/proc/Make(var/X)
-	var/datum/dir/current = src.pwd
-	var/N = X
+
+//End rm//
+
+
+//touch, creates a file//
+
+/datum/command/touch
+	names = list("touch","create")
+	help_text = "touch {PATH}: Creates a file at path PATH."
+
+/datum/command/touch/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/datum/dir/current = source.pwd
+	var/N = args[1]
 	if(findtext(N,"/",1,0)) // ITS A PATH
 		var/datum/dir/start
 		var/done = 1
 		var/list/D = list()
 		if(findtext(N,"/",1,2))
-			start = root
+			start = source.root
 			N = copytext(N,2,0)
 		else
-			start = src.pwd
+			start = source.pwd
 		while(done)
 			var/loc1 = findtext(N,"/",1,0)
 			if(!loc1)
@@ -437,145 +554,231 @@
 		var/count = 0
 		for(var/A in D)
 			count++
-			src.pwd = start
+			source.pwd = start
 			if(count == D.len)
-				X = A
+				N = A
 				break
-			start = FindDir(A)
-		src.pwd = start
-	if(FindAny(X))
-		Message("There is already a directory/file with the same name")
+			start = source.FindDir(A)
+		source.pwd = start
+	if(source.FindAny(N))
+		source.Message("There is already a directory/file with the same name.")
 		return
-	var/datum/dir/file/F = new(X,src.pwd)
-	src.pwd = current
-	F.owned = src.user
-	F.permissions[src.user.name] = RW
+	var/datum/dir/file/F = new(N,source.pwd)
+	source.pwd = current
+	F.owned = source.user
+	F.permissions[source.user.name] = RW
 	F.holder.contents += F
-/datum/os/proc/FTP(var/N)
-	var/datum/dir/D = FindDir(N)
+
+//End touch//
+
+
+//ftp: Documentation missing. [FIXME]//
+
+/datum/command/ftp
+	names = list("ftp")
+	help_text = "ftp {???}: ???"
+
+/datum/command/ftp/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/datum/dir/D = source.FindDir(args[1])
 	if(!D)
 		return
 	var/datum/dir/X = new D.type ()
 	for(var/A in X.vars)
 		X.vars[A] = D.vars[A]
-	X.holder = src.root
-	X.owned = src.user
-	X.permissions[src.user.name] = RW
+	X.holder = source.root
+	X.owned = source.user
+	X.permissions[source.user.name] = RW
 	X.holder.contents += X
-/datum/os/proc/IpConfig()
-	if(connected)
-		Message("IP:[connected.ip]")
-		if(connected.hostnames.len >= 1)
-			for(var/A in connected.hostnames)
-				src.owner << "HOSTNAME:[A]"
+
+//End ftp//
+
+
+//ifconfig, prints hostname and IP//
+
+/datum/command/ifconfig
+	names = list("ifconfig","ipconfig")
+	help_text = "ipconfig: Prints hostname and IP for the current computer."
+
+/datum/command/ifconfig/Run()
+	if(source.connected)
+		source.Message("IP:[source.connected.ip]")
+		if(source.connected.hostnames.len >= 1)
+			for(var/A in source.connected.hostnames)
+				source.Message("HOSTNAME:[A]")
 	else
-		Message("IP:[src.ip]")
-		if(hostnames.len >= 1)
-			for(var/A in hostnames)
-				Message("HOSTNAME:[A]")
-/datum/os/proc/UserAdd(N,P)
-	if(!N || !P)
+		source.Message("IP:[source.ip]")
+		if(source.hostnames.len >= 1)
+			for(var/A in source.hostnames)
+				source.Message("HOSTNAME:[A]")
+
+//End ifconfig//
+
+
+//useradd, adds user//
+
+/datum/command/useradd
+	names = list("useradd","adduser","newuser")
+	help_text = "useradd {NAME} {PASS}: Creates a user of name NAME with password PASS."
+
+/datum/command/useradd/Run(var/list/args)
+	if(args.len != 2)
+		source.Message("Invalid number of arguments.")
 		return
+	var/N = args[1]
+	var/P = args[2]
 	var/datum/user/X = new(N,P)
-	if(!connected && src.user.name == "root")
-		if(GetUser(N))
+	if(!source.connected && source.user.name == "root")
+		if(source.GetUser(N))
 			del(X)
-			Message("already a account named this")
+			source.Message("There is already already an account with this name.")
 			return
-		src.users += X
-		Message("Created [X.name]")
-	else if(src.connectedas.name == "root")
-		if(connected.GetUser(N))
+		source.users += X
+		source.Message("Created [X.name]")
+	else if(source.connectedas.name == "root")
+		if(source.connected.GetUser(N))
 			del(X)
-			Message("already a account named this")
+			source.Message("There is already already an account with this name.")
 			return
-		src.connected.users += X
-		Message("Created [X.name]")
+		source.connected.users += X
+		source.Message("Created [X.name]")
 	else
 		del(X)
-/datum/os/proc/UserModify(N,OP,NP)
-	if(!N || !OP || !NP)
+
+//End useradd//
+
+
+//usermod, changes the password of a user//
+
+/datum/command/usermod
+	names = list("usermod","moduser","upasswd")
+	help_text = "usermod {USER} {OPASS} {NPASS}: Modifies the password of USER, where OPASS is the old password and NPASS is the new password."
+
+/datum/command/usermod/Run(var/list/args)
+	if(args.len != 3)
+		source.Message("Invalid number of arguments.")
 		return
-	if(!connected && IsRoot())
-		var/datum/user/X = GetUser(N)
+	var/N = args[1]
+	var/OP = args[2]
+	var/NP = args[3]
+	if(!source.connected && source.IsRoot())
+		var/datum/user/X = source.GetUser(N)
 		if(!X)
-			Message("No user by this name")
+			source.Message("No user exists by this name.")
 			return
 		if(X.password != OP)
 			return
 		X.password = NP
-		Message("[N] password has been changed...")
-/datum/os/proc/UserRemove(N,P)
-	if(!connected)
-		if(N == "root")
-			Message("Cannot remove root account")
-			return
-		for(var/datum/user/A in users)
-			if(A.name == N)
-				del(A)
-				Message("Deleted [N]")
-				return
-	else if(connectedas.name == "root")
-		for(var/datum/user/A in connected.users)
-			if(A.name == N)
-				del(A)
-				Message("Deleted [N]")
-				return
-/datum/os/proc/ListUsers()
-	if(!connected)
-		if(src.user.name != "root")
-			return
-		for(var/datum/user/A in users)
-			Message(A.name)
-	else
-		if(src.connectedas.name != "root")
-			return
-		for(var/datum/user/A in connected.users)
-			Message(A.name)
-/datum/os/proc/Passwd(var/A)
-	if(!A)
-		return
-	if(!connected)
-		src.user.password = A
-		src.owner << "Password changed..."
-datum/os/proc/Chmod(X,UN,DN)
-	if(!IsRoot())
-		src.owner << "You need to be root"
-		return
-	var/datum/dir/D = FindAny(DN)
-	if(!D)
-		src.owner << "Can't find a file named [DN]"
-		return
-	var/Y = Right2Num(X)
-	D.permissions[UN] = Y
-	src.owner << "[UN] has been given [X] rights to [DN]"
+		source.Message("[N]'s password has been changed.")
 
-datum/os/proc/Right2Num(X)
-	if(X == "R")
-		return 1
-	if(X == "W")
-		return 2
-	if(X == "RW")
-		return 3
-datum/os/proc/IsRoot()
-	if(!connected)
-		if(src.user.name != "root")
-			return 0
-		return 1
+//End usermod//
+
+
+//userdel, deletes users//
+
+/datum/command/userdel
+	names = list("userdel","rmuser")
+	help_text = "userdel {USER}: Removes USER from the system."
+
+/datum/command/userdel/Run(var/list/args)
+	if(args.len != 2)
+		source.Message("Invalid number of arguments.")
+		return
+	var/N = args[1]
+	if(!source.connected)
+		if(N == "root")
+			source.Message("Cannot remove root account")
+			return
+		for(var/datum/user/A in source.users)
+			if(A.name == N)
+				del(A)
+				source.Message("Deleted user [N].")
+				return
+	else if(source.connectedas.name == "root")
+		for(var/datum/user/A in source.connected.users)
+			if(A.name == N)
+				del(A)
+				source.Message("Deleted user [N].")
+				return
+
+//End userdel//
+
+
+//userlist, lists users//
+
+/datum/command/userlist
+	names = list("userlist","lsuser","who")
+	help_text = "userlist: Lists all users on the system."
+
+/datum/command/userlist/Run(var/list/args)
+	if(!source.connected)
+		if(source.user.name != "root")
+			return
+		for(var/datum/user/A in source.users)
+			source.Message(A.name)
 	else
-		if(src.connectedas.name != "root")
-			return 0
-		return 1
-datum/os/proc/Copy(Y)
+		if(source.connectedas.name != "root")
+			return
+		for(var/datum/user/A in source.connected.users)
+			source.Message(A.name)
+
+//End userlist//
+
+//passwd, changes the password of the current user//
+
+/datum/command/passwd
+	names = list("passwd")
+	help_text = "passwd {PASS}: Sets the password of the current user to PASS."
+
+/datum/command/passwd/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	if(!source.connected)
+		source.user.password = args[1]
+		source.Message("Password changed.")
+
+//End passwd//
+
+
+//chmod, changes the access rights of a file for a user//
+
+/datum/command/chmod
+	names = list("chmod","acl")
+	help_text = "chmod {PERM} {USER} {FILE}: Gives USER PERM rights to FILE."
+
+/datum/command/chmod/Run(var/list/args)
+	if(args.len != 3)
+		source.Message("Invalid number of arguments.")
+		return
+	var/X = args[1]
+	var/UN = args[2]
+	var/DN = args[3]
+	if(!source.IsRoot())
+		source.Message("You need to be root to perform this action.")
+		return
+	var/datum/dir/D = source.FindAny(DN)
+	if(!D)
+		source.Message("Can't find a file named [DN].")
+		return
+	var/Y = source.Right2Num(X)
+	D.permissions[UN] = Y
+	source.Message("[UN] has been given [X] rights to [DN].")
+
+//End chmod//
+
+/*datum/os/proc/Copy(Y)
 	if(Y == "*")
 		for(var/datum/dir/X in pwd.contents)
 			copy += X
-			src.owner << "Added [X.name] into the copy list"
+			src.owner << "Added [X.name] into the clipboard."
 		return
 	var/datum/dir/X = FindAny(Y)
 	if(X)
 		copy += X
-		src.owner << "Added [X.name] into the copy list"
+		src.owner << "Added [X.name] into the clipboard."
 
 datum/os/proc/Paste()
 	if(copy.len <= 0)
@@ -631,9 +834,9 @@ datum/os/proc/CopyFile(var/datum/dir/A,var/datum/dir/B)
 			B.contents += X
 datum/os/proc/Connect(ip,user,pass)
 	if(user && pass)
-		   www.ConnectTo_s(ip,src,user,pass)
+		www.ConnectTo_s(ip,src,user,pass)
 	else
-		   www.ConnectTo(ip,src)
+		www.ConnectTo(ip,src)
 
 datum/os/proc/BG(path)
 	var/datum/dir/file/program/X = FindProg(path)
