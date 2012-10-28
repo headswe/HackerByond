@@ -10,9 +10,9 @@ datum/os/server/New(ips,names,hostnamex)
 	X.permissions["root"] = RW
 	root.permissions["root"] = RW
 	Boot()
-	src.ip = ips
+	/*src.ip = ips
 	www.RegisterDomain(src,hostnamex)
-	www.nodes[ip] = src
+	www.nodes[ip] = src*/ // TODO:
 	name = names
 	var/datum/dir/file/V = new("testhtml",pwd)
 	V.contents += "Welcome to the server \n<href=\"testhtml2\"name=\">Continue\""

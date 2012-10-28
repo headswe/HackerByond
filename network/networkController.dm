@@ -4,7 +4,7 @@
 		if(Node.type == /obj/device/router)
 			if(!base_ip)
 				var/obj/device/router/R = Node
-				base_ip = R.system.ip
+				base_ip = R.system.this_ip
 		return
 
 	DetachNode(var/obj/Node)
@@ -29,6 +29,7 @@
 		return
 
 	Initialize()
+		LANnet += src
 		return
 
 	Finalize()

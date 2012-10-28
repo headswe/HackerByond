@@ -8,7 +8,7 @@ obj/wall
 turf
 	icon = 'floor.dmi'
 	icon_state = ""
-	var/intact = 1
+	var/intact = 0
 turf/floor
 
 obj/proc/hide() // TODO: IMPLEMENT
@@ -20,6 +20,7 @@ obj
 	proc/OnMobUse()
 obj/verb/examine()
 var/list/AllNetworks = list( )
+var/list/LANnet = list()
 var/list/cardinal = list(NORTH,EAST,WEST,SOUTH)
 
 /obj/cabling/Network
@@ -45,3 +46,12 @@ var/list/cardinal = list(NORTH,EAST,WEST,SOUTH)
 	Amount     = 30
 	CableType  = /obj/cabling/Network
 	CanLayDiagonally = 0
+
+mob/verb/dispNetWork()
+	for(var/A in AllNetworks)
+		world << A
+	var/i = 0
+	for(var/datum/UnifiedNetworkController/Network/B in LANnet)
+		world << i++
+		for(var/obj/A in B.Network.Nodes)
+			world << A
