@@ -14,12 +14,16 @@ datum/www/
 	sub_3 = z
 	sub_4 = k
 	src.source = source
+/datum/ip/proc/isLAN(var/datum/ip/p)
+	if(sub_1 == p.sub_1 && sub_2 == p.sub_2 && p.sub_3 == sub_3)
+		return 1
+	else
+		return 0
 /datum/ip/proc/GetNewIP()
 	if(sub_4 < 255)
 		var/datum/ip/K = new /datum/ip(sub_1,sub_2,sub_3,sub_4+count,src.source)
 		if(istype(source,/obj/device/router))
 			count++
-			world << count
 		return K
 /datum/ip/proc/String()
 	return "[sub_1].[sub_2].[sub_3].[sub_4]"
@@ -32,28 +36,21 @@ datum/www/
 			return
 		else
 			X.this_ip = R.system.this_ip.GetNewIP()
+			R.nodes[X.this_ip.String()] = X
 			return
 	var/x1 = rand(1,255)
 	var/x2  = rand(1,255)
+	// TODO: ADD CHECKS SO THAT NOT ONE IP GET THE SAME X1/X2
 	X.this_ip = new /datum/ip(x1,x2,1,1,X.holder)
 	X.network = 1
+/datum/www/proc/GetAdressFrom(var/obj/device/router/r ,var/datum/os/X)
+	X.this_ip = r.system.this_ip.GetNewIP()
+	r.nodes[X.this_ip.String()] = X
 /datum/www/proc/FindRouter(var/datum/UnifiedNetwork/A)
 	for(var/atom/B in A.Nodes)
 		if(istype(B,/obj/device/router))
 			return B
-/datum/www/proc/GetAdressv2(var/T)
-	var/ip
-	spawn() while(1)
-		var/x1 = rand(1,256)
-		var/x2  = rand(1,256)
-		var/x3 = rand(1,256)
-		var/x4 = rand(1,256)
-		ip = "[x1].[x2].[x3].[x4]"
-		var/A = nodes[ip]
-		if(!A)
-			break
-	nodes[ip] = T
-	return ip
+
 /datum/www/proc/RegisterDomain(var/datum/os/X,path)
 	if(!X.this_ip)
 		return 0
@@ -62,11 +59,18 @@ datum/www/
 		return
 	nodes[path] = X
 	X.hostnames += path
-/datum/www/proc/ConnectTo(var/ip,var/datum/os/client)
-	if(nodes[ip])
-		client.Message("Connecting to [ip]")
+/datum/www/proc/ConnectTo(var/datum/ip/I,var/datum/os/client)
+	if(I && I.isLAN(client.this_ip))
+		client.Message("Connecting to [I.String()]")
 		sleep(30)
-		var/datum/os/server = nodes[ip]
+		var/obj/device/router/R = I.source:
+		if(!R)
+			return
+		var/datum/os/server = R.nodes[I.String()]
+		if(!server)
+			client.Message("Connection refused")
+			client.Message("Connection attempt failed..")
+			return
 		if(server.CanConnect(client))
 			client.Message("Connection etablished..")
 			server.OnConnect(client)
@@ -109,10 +113,12 @@ datum/www/
 //	world << "TO:[where],INFO:[info],[from]"
 	src.send()
 /datum/packet/proc/send()
-	var/datum/os/rec = www.nodes[where]
-	if(!rec)
-		return
-	rec.PacketReceived(src)
+
+//	var/obj/device/router/R = FindRouter(net)
+//	var/datum/os/rec = www.nodes[where]
+//	if(!rec)
+//		return
+//	rec.PacketReceived(src)
 datum/os/proc/PacketReceived(var/datum/packet/P)
 	if(!P)
 		return
