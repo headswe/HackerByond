@@ -55,3 +55,13 @@ mob/verb/dispNetWork()
 		world << i++
 		for(var/obj/A in B.Network.Nodes)
 			world << A
+
+world/New()
+	MasterProcess()
+proc/MasterProcess()
+	set background = 1
+	for(var/name in AllNetworks)
+		for(var/datum/UnifiedNetwork/net in AllNetworks[name])
+			net.Controller.Process()
+	sleep(1)
+	spawn() MasterProcess()

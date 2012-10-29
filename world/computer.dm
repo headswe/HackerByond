@@ -11,7 +11,7 @@ obj/device/Computer/New()
 obj/device/Computer/OnMobUse(mob/M)
 	M.SetActiveSystem(src.system)
 obj/device/Click(location,control,params)
-	world << "MELLOW"
+	world.log << "MELLOW"
 	if(usr in range(1,src))
 		OnMobUse(usr)
 obj/item
