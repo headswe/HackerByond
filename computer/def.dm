@@ -24,13 +24,15 @@ mob/verb/cmd(msg as text)
 	var/list/copy = list() // Copy buffer
 	var/auth = 1 // Authed???
 	var/boot = 0 // Booted?
-	var/ip = null // IP
+	var/datum/ip/this_ip = null // IP
+	var/obj/device/holder
 	var/list/packets = list() // packets
 	var/list/process = list() // current process
 	var/datum/user/connectedas // what users you are connected as
 	var/list/hostnames = list()
 	var/datum/user/user = new("root","password")
 	var/list/tasks = list()
+	var/list/ip_list = list()
 	var/list/config = list("webserver" = 0,motd = "Welcome to the server")
 /datum/os/Del()
 	for(var/datum/praser/P in process)
@@ -38,8 +40,9 @@ mob/verb/cmd(msg as text)
 	for(var/mob/A in mob_users)
 		mob_users -= A
 	..()
-/datum/os/New(mob/A)
+/datum/os/New(obj/device/A)
 	pwd = root
+	holder = A
 	var/datum/dir/X = new("downloads",src.pwd)
 	var/datum/dir/file/program/test/T = new("testapp",src.pwd)
 	pwd.contents += T
@@ -53,7 +56,8 @@ mob/verb/cmd(msg as text)
 	users += user
 	X.permissions[user.name] = RW
 	root.permissions[user.name] = RW
-	X.owned = A
+	X.owned = user
+
 	for(var/com_type in typesof (/datum/command))
 		var/datum/command/com = new com_type(src)
 		for(var/name in com.names)

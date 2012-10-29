@@ -4,7 +4,7 @@
 	Message("Booting...")
 	sleep(10)
 	Message("Starting eth0 interface..")
-	Message("IP:[src.ip]")
+	//Message("IP:[src.this_ip.String()]")
 	src.boot = 1
 	Message("Boot Complete")
 	Message("Thank you for using ThinkThank")

@@ -3,9 +3,10 @@ obj/device/Computer
 	name = "Computer"
 	icon = 'player.dmi'
 	icon_state = ""
-	var/datum/os/system = new()
+	var/datum/os/system
 obj/device/Computer/New()
 	..()
+	system = new(src)
 	system.Boot()
 obj/device/Computer/OnMobUse(mob/M)
 	M.SetActiveSystem(src.system)

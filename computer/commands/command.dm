@@ -915,3 +915,11 @@
 			source.Message(X.name)
 
 //End ps//
+
+
+/datum/command/ip
+	names = list("ip")
+/datum/command/ip/Run(var/list/args)
+	if(source.this_ip == null)
+		www.GetAdress(source)
+	source.Message(source.this_ip.String()+":[source.this_ip.count]")

@@ -391,12 +391,12 @@ datum/os/proc/testpraser(var/N)
 	X.holder.contents += X
 /datum/os/proc/IpConfig()
 	if(connected)
-		Message("IP:[connected.ip]")
+		Message("IP:[connected.this_ip.String()]")
 		if(connected.hostnames.len >= 1)
 			for(var/A in connected.hostnames)
 				src.mob_users << "HOSTNAME:[A]"
 	else
-		Message("IP:[src.ip]")
+		Message("IP:[src.this_ip.String()]")
 		if(hostnames.len >= 1)
 			for(var/A in hostnames)
 				Message("HOSTNAME:[A]")
