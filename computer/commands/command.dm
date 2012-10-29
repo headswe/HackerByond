@@ -613,12 +613,12 @@
 
 /datum/command/ifconfig/Run()
 	if(source.connected)
-		source.Message("IP:[source.connected.ip]")
+		source.Message("IP:[source.connected.this_ip.String()]")
 		if(source.connected.hostnames.len >= 1)
 			for(var/A in source.connected.hostnames)
 				source.Message("HOSTNAME:[A]")
 	else
-		source.Message("IP:[source.ip]")
+		source.Message("IP:[source.this_ip.String()]")
 		if(source.hostnames.len >= 1)
 			for(var/A in source.hostnames)
 				source.Message("HOSTNAME:[A]")
