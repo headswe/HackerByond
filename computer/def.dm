@@ -52,7 +52,6 @@ mob/verb/cmd(msg as text)
 	pwd.contents += X
 	X.holder = pwd
 	dldir = X
-	www.GetAdress(src)
 	users += user
 	X.permissions[user.name] = RW
 	root.permissions[user.name] = RW

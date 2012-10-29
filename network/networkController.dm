@@ -5,9 +5,24 @@
 			if(!router)
 				var/obj/device/router/R = Node
 				router = R
+				if(!R.system.holder)
+					R.system.holder = R
+					world.log << "Holder was empty"
+				R.system.this_ip = www.GetAdress(R.system)
+				world.log << "Router added [R.system.this_ip.String()]"
+				for(var/obj/device/Computer/com in Network.Nodes)
+					www.GetAdressFrom(R,com.system)
+					world.log << "IP updated for computerz"
 		else if(istype(Node,/obj/device/Computer))
 			if(router)
+				if(!Node:system)
+					spawn while(Node:system == null)
+						world << "waiting for system"
+						sleep(10)
 				www.GetAdressFrom(router,Node:system)
+				world.log << "System device added"
+			else
+				world.log << "NO router found for NET"
 		return
 
 	DetachNode(var/obj/Node)
@@ -59,4 +74,10 @@
 		return
 
 	Process()
+		if(!router)
+			return
+		for(var/obj/device/Computer/C in Network.Nodes)
+			if(C.system.this_ip == null)
+				www.GetAdressFrom(router,C.system)
+				world << "IP updated for computerz"
 		return

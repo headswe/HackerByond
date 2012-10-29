@@ -1,18 +1,23 @@
 "a" = (/turf,/area)
-"b" = (/obj/wall{tag = "icon-s-e"; icon_state = "s-e"},/turf,/area)
-"c" = (/obj/wall,/turf,/area)
+"b" = (/obj/wall{tag = "icon-wall (NORTHWEST)"; icon_state = "wall"; dir = 9},/turf,/area)
+"c" = (/obj/wall{tag = "icon-wall (NORTH)"; icon_state = "wall"; dir = 1},/turf,/area)
 "d" = (/obj/wall{tag = "icon-wall (NORTHEAST)"; icon_state = "wall"; dir = 5},/turf,/area)
-"e" = (/obj/wall{tag = "icon-wall (EAST)"; icon_state = "wall"; dir = 4},/turf,/area)
+"e" = (/obj/wall{tag = "icon-wall (WEST)"; icon_state = "wall"; dir = 8},/turf,/area)
 "f" = (/obj/device/Computer,/obj/cabling/Network{tag = "icon-0-2"; icon_state = "0-2"},/turf,/area)
-"g" = (/obj/cabling/Network{tag = "icon-1-2"; icon_state = "1-2"},/turf,/area)
-"h" = (/obj/cabling/Network{tag = "icon-0-2"; icon_state = "0-2"},/obj/cabling/Network,/obj/cabling/Network{tag = "icon-0-4"; icon_state = "0-4"},/turf,/area)
-"i" = (/obj/device/router,/obj/cabling/Network{tag = "icon-0-8"; icon_state = "0-8"},/turf,/area)
-"j" = (/obj/device/Computer,/obj/cabling/Network{tag = "icon-0-4"; icon_state = "0-4"},/turf,/area)
-"k" = (/obj/cabling/Network{tag = "icon-4-8"; icon_state = "4-8"},/turf,/area)
-"l" = (/obj/cabling/Network{tag = "icon-0-8"; icon_state = "0-8"},/obj/cabling/Network,/turf,/area)
-"m" = (/obj/wall{tag = "icon-wall (SOUTHWEST)"; icon_state = "wall"; dir = 10},/turf,/area)
-"n" = (/obj/wall{tag = "icon-wall (NORTH)"; icon_state = "wall"; dir = 1},/turf,/area)
-"o" = (/obj/wall{tag = "icon-wall (SOUTHEAST)"; icon_state = "wall"; dir = 6},/turf,/area)
+"g" = (/obj/wall{tag = "icon-wall (EAST)"; icon_state = "wall"; dir = 4},/turf,/area)
+"h" = (/obj/cabling/Network{tag = "icon-1-2"; icon_state = "1-2"},/turf,/area)
+"i" = (/obj/cabling/Network{tag = "icon-0-2"; icon_state = "0-2"},/obj/cabling/Network,/obj/cabling/Network{tag = "icon-0-4"; icon_state = "0-4"},/turf,/area)
+"j" = (/obj/device/router,/obj/cabling/Network{tag = "icon-0-8"; icon_state = "0-8"},/turf,/area)
+"k" = (/obj/device/Computer,/obj/cabling/Network{tag = "icon-0-4"; icon_state = "0-4"},/turf,/area)
+"l" = (/obj/cabling/Network{tag = "icon-4-8"; icon_state = "4-8"},/turf,/area)
+"m" = (/obj/cabling/Network{tag = "icon-0-8"; icon_state = "0-8"},/obj/cabling/Network,/turf,/area)
+"n" = (/obj/wall{tag = "icon-wall (SOUTHWEST)"; icon_state = "wall"; dir = 10},/turf,/area)
+"o" = (/obj/wall,/turf,/area)
+"p" = (/obj/wall{tag = "icon-wall (SOUTHEAST)"; icon_state = "wall"; dir = 6},/turf,/area)
+"q" = (/obj/device/router,/obj/cabling/Network{tag = "icon-0-4"; icon_state = "0-4"},/turf,/area)
+"r" = (/obj/device/Computer,/obj/cabling/Network{tag = "icon-0-2"; icon_state = "0-2"},/obj/cabling/Network{tag = "icon-0-8"; icon_state = "0-8"},/turf,/area)
+"s" = (/obj/cabling/Network{tag = "icon-0-2"; icon_state = "0-2"},/obj/cabling/Network,/turf,/area)
+"t" = (/obj/device/Computer,/obj/cabling/Network,/turf,/area)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaa
@@ -20,19 +25,19 @@ aaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaa
 aaabcccccdaaaaaaaaaa
-aaaeaafaaeaaaaaaaaaa
-aaaeaagaaeaaaaaaaaaa
-aaaeaagaaeaaaaaaaaaa
-aaaeaagaaeaaaaaaaaaa
-aaaeaahiaeaaaaaaaaaa
-aaaeaagaaeaaaaaaaaaa
-aaaejklaaeaaaaaaaaaa
-aaamnnannoaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaa
+aaaeaafaagaaaaaaaaaa
+aaaeaahaagaaaaaaaaaa
+aaaeaahaagaaaaaaaaaa
+aaaeaahaagaaaaaaaaaa
+aaaeaaijagaaaaaaaaaa
+aaaeaahaagaaaaaaaaaa
+aaaeklmaagaaaaaaaaaa
+aaanooaoopaaaaaaaaaa
+aaaaaaaaaaaabccccdaa
+aaaaaaaaaaaaeqllrgaa
+aaaaaaaaaaaaeaaahgaa
+aaaaaaaaaaaaaaaasgaa
+aaaaaaaaaaaaeaaatgaa
+aaaaaaaaaaaanoooopaa
 aaaaaaaaaaaaaaaaaaaa
 "}

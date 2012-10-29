@@ -28,6 +28,9 @@ datum/www/
 /datum/ip/proc/String()
 	return "[sub_1].[sub_2].[sub_3].[sub_4]"
 /datum/www/proc/GetAdress(var/datum/os/X)
+	if(X == null)
+		world << "OS IS NULL"
+		return
 	if(!istype(X.holder,/obj/device/router))
 		var/datum/UnifiedNetwork/A = X.holder.Networks[/obj/cabling/Network]
 		var/obj/device/router/R = FindRouter(A)
@@ -35,15 +38,20 @@ datum/www/
 			world << "NO ROUTER"
 			return
 		else
-			X.this_ip = R.system.this_ip.GetNewIP()
+			var/datum/ip/IP = R.system.this_ip.GetNewIP()
+			X.this_ip = IP
 			R.nodes[X.this_ip.String()] = X
-			return
+			return IP
 	var/x1 = rand(1,255)
 	var/x2  = rand(1,255)
 	// TODO: ADD CHECKS SO THAT NOT ONE IP GET THE SAME X1/X2
-	X.this_ip = new /datum/ip(x1,x2,1,1,X.holder)
+	var/datum/ip/IP = new /datum/ip(x1,x2,1,1,X.holder)
 	X.network = 1
+	return IP
 /datum/www/proc/GetAdressFrom(var/obj/device/router/r ,var/datum/os/X)
+	if(!r.system.this_ip)
+		world.log << "either X dosent exist or R.system.this_ip is null"
+		return
 	X.this_ip = r.system.this_ip.GetNewIP()
 	r.nodes[X.this_ip.String()] = X
 /datum/www/proc/FindRouter(var/datum/UnifiedNetwork/A)
@@ -134,7 +142,7 @@ datum/os/proc/PacketReceived(var/datum/packet/P)
 			X.ForwardPacket(P)
 	for(var/datum/praser/V in src.process)
 		if(V.func["onPacketRecieve"])
-			world << " got a packet"
+			world.log << " got a packet"
 			var/datum/func/F = V.func["onPacketRecieve"]
 			var/list/args2 = list()
 			args2 += P.info
@@ -142,4 +150,4 @@ datum/os/proc/PacketReceived(var/datum/packet/P)
 			args2 += P.extrainfo
 			F.Run(src,args2)
 	//	else
-	//		world << "fuck you"
+	//		world.log << "fuck you"
