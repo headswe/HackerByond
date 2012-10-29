@@ -16,17 +16,26 @@
 
 /datum/command/dir/Run(var/list/args)
 	var/count = 1
-	var/text
+	var/text = ""
 	for(var/datum/dir/D in source.pwd.contents)
+		var/out = ""
+		if(istype(D, /datum/dir/file/program))
+			out = "<b><font color='green'>[D.name]</font></b>"
+		else if(istype(D, /datum/dir/file))
+			out = "<b>[D.name]</b>"
+		else if(istype(D, /datum/dir))
+			out = "<b><font color='blue'>[D.name]</font></b>"
+		else
+			out = D.name
 		if(count == 3)
-			text += " [D.name]\n"
+			text += " [out]\n"
 			count = 1
 			continue
 		else if(count == 1)
-			text += "[D.name]"
+			text += "[out]"
 			count++
 		else
-			text += " [D.name]"
+			text += " [out]"
 			count++
 	source.Message(text)
 
@@ -36,7 +45,7 @@
 //Help command, lists all registered commands//
 
 /datum/command/help
-	names = list("help", "man")
+	names = list("help","man")
 	help_text = "help \[CMD\]: Lists all registered commands on the current computer, alternately displays help for command CMD."
 
 /datum/command/help/Run(var/list/args)
@@ -769,158 +778,140 @@
 
 //End chmod//
 
-/*datum/os/proc/Copy(Y)
-	if(Y == "*")
-		for(var/datum/dir/X in pwd.contents)
-			copy += X
-			src.owner << "Added [X.name] into the clipboard."
-		return
-	var/datum/dir/X = FindAny(Y)
-	if(X)
-		copy += X
-		src.owner << "Added [X.name] into the clipboard."
 
-datum/os/proc/Paste()
-	if(copy.len <= 0)
-		src.owner << "Nothing to paste.."
+//copy, copies file/dir to clipboard//
+
+/datum/command/copy
+	names = list("copy")
+	help_text = "copy {FILE}: Copies FILE onto the clipboard."
+
+/datum/command/copy/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/Y = args[1]
+	if(Y == "*")
+		for(var/datum/dir/X in source.pwd.contents)
+			source.copy += X
+			source.Message("Added [X.name] to the clipboard.")
+		return
+	var/datum/dir/X = source.FindAny(Y)
+	if(X)
+		source.copy += X
+		source.Message("Added [X.name] to the clipboard.")
+
+//End copy//
+
+
+//paste, pastes from the clipboard//
+
+/datum/command/paste
+	names = list("paste")
+	help_text = "paste: Pastes the contents of the clipboard to the current directory."
+
+/datum/command/paste/Run()
+	if(source.copy.len <= 0)
+		source.Message("Nothing to paste.")
 		return
 	var/pasted = 0
 	var/notpasted = 0
-	var/total = copy.len
-	for(var/datum/dir/A in copy)
-		if(FindAny(A.name))
-			Message("[A.name] already exists..")
+	var/total = source.copy.len
+	for(var/datum/dir/A in source.copy)
+		if(source.FindAny(A.name))
+			source.Message("[A.name] already exists.")
 			notpasted++
 			continue
 		if(A.type == /datum/dir)
-			var/datum/dir/D = new(A.name,src.pwd)
+			var/datum/dir/D = new(A.name,source.pwd)
 			for(var/datum/dir/AX in A.contents)
-				CopyFile(AX,D)
+				source.CopyFile(AX,D)
 			D.permissions.Copy(A.permissions,1,0)
-			src.pwd.contents += D
+			source.pwd.contents += D
 			pasted++
 		else if(A.type == /datum/dir/file)
-			var/datum/dir/file/D = new(A.name,src.pwd)
+			var/datum/dir/file/D = new(A.name,source.pwd)
 			D.contents = A.contents
 			D.permissions.Copy(A.permissions,1,0)
-			src.pwd.contents += D
+			source.pwd.contents += D
 			pasted++
 		else if(istype(A,/datum/dir/file/program))
-			var/datum/dir/X = new A.type (A.name,src.pwd)
+			var/datum/dir/X = new A.type (A.name,source.pwd)
 			X.permissions.Copy(A.permissions,1,0)
-			src.pwd.contents += X
+			source.pwd.contents += X
 			pasted++
-	copy = list()
-	Message("[pasted]/[total] were pasted, [notpasted] already existed..")
-datum/os/proc/CopyFile(var/datum/dir/A,var/datum/dir/B)
-	if(A)
-		if(A.type == /datum/dir)
-			var/datum/dir/D = new(A.name,src.pwd)
-			for(var/datum/dir/AX in A.contents)
-				CopyFile(AX,D)
-			D.permissions.Copy(A.permissions,1,0)
-			D.holder = B
-			B.contents += D
-		else if(A.type == /datum/dir/file)
-			var/datum/dir/file/D = new(A.name,src.pwd)
-			D.contents = A.contents
-			D.permissions.Copy(A.permissions,1,0)
-			D.holder = B
-			B.contents += D
-		else if(istype(A,/datum/dir/file/program))
-			var/datum/dir/X = new A.type (A.name,src.pwd)
-			X.permissions.Copy(A.permissions,1,0)
-			X.holder = B
-			B.contents += X
-datum/os/proc/Connect(ip,user,pass)
-	if(user && pass)
-		www.ConnectTo_s(ip,src,user,pass)
-	else
-		www.ConnectTo(ip,src)
+	source.copy = list()
+	source.Message("[pasted]/[total] were pasted, [notpasted] already existed.")
 
-datum/os/proc/BG(path)
-	var/datum/dir/file/program/X = FindProg(path)
+//End paste//
+
+
+//bg, runs program is background//
+
+/datum/command/bg
+	names = list("bg","nohup")
+	help_text = "bg {PROG}: Runs PROG in the background."
+
+/datum/command/bg/Run(var/list/args)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	var/datum/dir/file/program/X = source.FindProg(args[1])
 	if(!X)
-		Message("Cannot find file")
+		source.Message("Cannot find file.")
 		return
-	if(connected)
-		connected.tasks += X
+	if(source.connected)
+		source.connected.tasks += X
 	else
-		tasks += X
-	Message("[path] is now being run in the background")
-datum/os/proc/Kill(path)
-	if(connected)
-		for(var/datum/dir/file/program/X in connected.tasks)
-			if(X.name == path)
-				X.Stop(connected)
-				connected.tasks -= X
-				Message("Killed [path]")
+		source.tasks += X
+	source.Message("[args[1]] is now being run in the background")
+
+//End bg//
+
+
+//kill, kills a running background process//
+
+/datum/command/kill
+	names = list("kill","killall","taskkill")
+	help_text = "kill {PROG}: Kills running program PROG."
+
+/datum/command/kill/Run(path)
+	if(args.len != 1)
+		source.Message("Invalid number of arguments.")
+		return
+	if(source.connected)
+		for(var/datum/dir/file/program/X in source.connected.tasks)
+			if(X.name == args[1])
+				X.Stop(source.connected)
+				source.connected.tasks -= X
+				source.Message("Killed [args[1]].")
 				return
 	else
-		for(var/datum/dir/file/program/X in src.tasks)
-			if(X.name == path)
-				X.Stop(src)
-				src.tasks -= X
-				Message("Killed [path]")
+		for(var/datum/dir/file/program/X in source.tasks)
+			if(X.name == args[1])
+				X.Stop(source)
+				source.tasks -= X
+				source.Message("Killed [args[1]].")
 				return
-datum/os/proc/BGLIST()
-	if(connected)
-		if(connected.tasks.len <= 0)
+
+//End kill//
+
+
+//ps, lists running processes//
+
+/datum/command/ps
+	names = list("ps")
+	help_text = "ps: Displays a list of running processes."
+
+/datum/command/ps/Run()
+	if(source.connected)
+		if(source.connected.tasks.len <= 0)
 			return
-		for(var/datum/dir/file/program/X in connected.tasks)
-			Message(X.name)
+		for(var/datum/dir/file/program/X in source.connected.tasks)
+			source.Message(X.name)
 	else
-		if(tasks.len <= 0)
+		if(source.tasks.len <= 0)
 			return
-		for(var/datum/dir/file/program/X in src.tasks)
-			src.owner << X.name
-datum/os/proc/process()
-	for(var/datum/dir/file/program/X in src.tasks)
-		if(!X.running)
-			X.Run(src)
+		for(var/datum/dir/file/program/X in source.tasks)
+			source.Message(X.name)
 
-/*datum/os/proc/Remote(var/address,var/command,var/list/args)
-	var/datum/function/F = new
-	F.name = command
-	var/run = 1
-	var/count = 0
-	while(run)
-		count++
-		if(count > args.len)
-			break
-		var/K = args[count]
-		if(findtext(K,"{",1,0))
-			//world << "Found a '"
-			for(var/A in args)
-				if(K == A)
-					continue
-				if(findtext(A,"}",1,0))
-					//world << "Found the other"
-					var/Z = K + A
-					Z = copytext(Z,1,0)
-					var/x = findtext(Z,"{",1,0)
-					var/y = findtext(Z,"}",x+1,0)
-					K = copytext(Z,x+1,y)
-					//world << "breaking"
-					break
-		//world << "[count]:[K]"
-		switch(count)
-			if(1)
-				F.arg1 = K
-			if(2)
-				F.arg2 = K
-			if(3)
-				F.arg3 = K
-			if(4)
-				F.arg4 = K
-			if(5)
-				F.arg5 = K
-	if(address == "localhost")
-		src.device:receive_packet(src.device,F)
-		return
-
-	address = address)
-	if(address == -1)
-		Message("Invalid IP supplied.")
-		return
-	Message(send_packet(src.device,address, F))*/*/
+//End ps//
