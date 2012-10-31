@@ -8,30 +8,32 @@
 				if(!R.system.holder)
 					R.system.holder = R
 					world.log << "Holder was empty"
-				R.system.this_ip = www.GetAdress(R.system)
+				GetAdress(R)
 				world.log << "Router added [R.system.this_ip.String()]"
-				for(var/obj/device/Computer/com in Network.Nodes)
-					www.GetAdressFrom(R,com.system)
-					world.log << "IP updated for computerz"
-		else if(istype(Node,/obj/device/Computer))
+		//		for(var/obj/device/computer/com in Network.Nodes)
+		//			GetAdress(com)
+		//			world.log << "IP updated for computerz"
+		else if(istype(Node,/obj/device/computer))
 			if(router)
 				if(!Node:system)
 					spawn while(Node:system == null)
 						world << "waiting for system"
 						sleep(10)
-				www.GetAdressFrom(router,Node:system)
-				router.nodes[Node:system:this_ip:String()] = Node:system
+				GetAdress(Node)
 				world.log << "System device added"
 			else
 				world.log << "NO router found for NET"
 		return
-
 	DetachNode(var/obj/Node)
 		if(router == Node)
-			// TODO:FIND ANOTHER TO TAKE OVER.
-			// OTHERWISE RESET ALL IPS TO NOTHING
+			for(var/obj/device/router/R in Network.Nodes)
+				if(R != Node)
+					router = R
+					router.system.this_ip = Node:system.this_ip
+					Node:system.this_ip = null
+					return
 			return
-		else if(istype(Node,/obj/device/Computer))
+		else if(istype(Node,/obj/device/computer) && router && Node:system != null)
 			router.nodes[Node:system:this_ip.String()] = null
 			router.removedNode += Node:system:this_ip
 			Node:system:this_ip = null
@@ -77,8 +79,8 @@
 	Process()
 		if(!router)
 			return
-		for(var/obj/device/Computer/C in Network.Nodes)
+		for(var/obj/device/computer/C in Network.Nodes)
 			if(C.system.this_ip == null)
-				www.GetAdressFrom(router,C.system)
+				GetAdress(C)
 				world << "IP updated for computerz"
 		return

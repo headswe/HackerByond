@@ -26,6 +26,7 @@ datum/os/server/New(ips,names,hostnamex)
 	users += F
 datum/os/server/Boot()
 	..()
+/*
 /datum/os/CanConnect(var/datum/os/client,user,pass)
 	if(src.auth == 1)
 		var/X = Login(client,user,pass)
@@ -41,7 +42,7 @@ datum/os/server/Boot()
 		clients += client
 		client.connected = src
 		client.connectedas = src.GetUser("root")
-		return 1
+		return 1*/
 /datum/os/proc/OnConnect(var/datum/os/client,user,pass)
 	client.Message(src.name)
 	client.Message(src.config["motd"])

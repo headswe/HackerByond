@@ -938,5 +938,5 @@
 	names = list("ip")
 /datum/command/ip/Run(var/list/args)
 	if(source.this_ip == null)
-		www.GetAdress(source)
+		GetAdress(source.holder)
 	source.Message(source.this_ip.String()+":[source.this_ip.count]")

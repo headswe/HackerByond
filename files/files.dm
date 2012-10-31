@@ -44,7 +44,7 @@ datum/dir/file/program/New(namez)
 	..()
 datum/dir/file/program/test
 	progname = "test app"
-datum/dir/file/program/background
+/*datum/dir/file/program/background
 	progname = "background app"
 datum/dir/file/program/background/proc/process()
 datum/dir/file/program/background/emailserver
@@ -116,7 +116,7 @@ datum/dir/file/program/emailclient
 	progname = "emailclient"
 datum/dir/file/program/emailclient/Run()
 	return 1
-
+*/
 datum/dir/file/program
 	var/is_script = 0
 	var/script = ""

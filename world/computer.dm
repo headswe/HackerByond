@@ -1,14 +1,14 @@
 obj/device
-obj/device/Computer
+obj/device/computer
 	name = "Computer"
 	icon = 'player.dmi'
 	icon_state = ""
 	var/datum/os/system
-obj/device/Computer/New()
+obj/device/computer/New()
 	..()
 	system = new(src)
 	system.Boot()
-obj/device/Computer/OnMobUse(mob/M)
+obj/device/computer/OnMobUse(mob/M)
 	M.SetActiveSystem(src.system)
 obj/device/Click(location,control,params)
 	world.log << "MELLOW"

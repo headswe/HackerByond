@@ -22,7 +22,35 @@ datum/www/
 		return K
 /datum/ip/proc/String()
 	return "[sub_1].[sub_2].[sub_3].[sub_4]"
-/datum/www/proc/GetAdress(var/datum/os/X)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*/datum/www/proc/GetAdress(var/datum/os/X)
 	if(X == null)
 		world << "OS IS NULL"
 		return
@@ -150,3 +178,4 @@ datum/os/proc/PacketReceived(var/datum/packet/P)
 			F.Run(src,args2)
 	//	else
 	//		world.log << "fuck you"
+*/

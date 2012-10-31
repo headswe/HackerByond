@@ -48,11 +48,10 @@ var/list/cardinal = list(NORTH,EAST,WEST,SOUTH)
 	CanLayDiagonally = 0
 
 mob/verb/dispNetWork()
-	for(var/A in AllNetworks)
-		world << A
 	var/i = 0
 	for(var/datum/UnifiedNetworkController/Network/B in LANnet)
 		world << i++
+		world << B.router
 		for(var/obj/A in B.Network.Nodes)
 			world << A
 
@@ -70,3 +69,29 @@ proc/string2ip(var/ip)
 	var/list/subs = dd_text2list(ip,".")
 	var/datum/ip/A = new(subs[1],subs[2],subs[3],subs[4],null)
 	return A
+
+
+proc/GetAdress(var/obj/device/A)
+	var/datum/UnifiedNetwork/net = A.Networks[/obj/cabling/Network]
+	var/datum/UnifiedNetworkController/Network/con = net.Controller
+	if(istype(A,/obj/device/router))
+		if(A:system)
+			A:system.this_ip = MakeAdress(A)
+			world.log << "THIS IS A ROUTER!!!!!!!!!!!!!!!!!!"
+			return
+	if(!con.router || !con.router.system || !A)
+		world << "NO ROUTER OR ROUTER SYSTEM OR NO A"
+		return
+	if(istype(A,/obj/device/computer))
+		if(A:system)
+			A:system.this_ip = con.router.system.this_ip.GetNewIP()
+			con.router.nodes[A:system:this_ip:String()] = A:system
+		return // TODO: WHAT DO I INTEND?
+proc/MakeAdress(var/obj/device/router/R)
+	if(R)
+		var/x1 = rand(1,255)
+		var/x2  = rand(1,255)
+		// TODO: ADD CHECKS SO THAT NOT ONE IP GET THE SAME X1/X2
+		var/datum/ip/IP = new /datum/ip(x1,x2,1,1,R)
+		world.log << IP.String()
+		return IP

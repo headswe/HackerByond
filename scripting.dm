@@ -674,9 +674,10 @@ datum/func/sendpacket/New(N,var/list/X,var/datum/praser/K)
 	owned = K
 datum/func/sendpacket/Run(var/datum/os/client,var/list/args)
 //	return
-	var/too = args[1]
+/*	var/too = args[1]
 	var/label = args[2]
 	args -= label
 	args -= too
 	new /datum/packet (label,too,client.this_ip,args)
 	return
+*/ // TODO: FIX
