@@ -917,6 +917,23 @@
 //End ps//
 
 
+// sh, remote control of other terminals //
+
+/datum/command/sh
+	names = list("sh","connect")
+	help_text = "sh {IP} \[username\] \[password\], Remote control of other terminals" // TODO: LOOKS RETARDED
+/datum/command/sh/Run(var/list/args)
+	for(var/A in args)
+		world << A
+	world << args.len
+	if(args.len < 3)
+		source.Connect(args[1],null,null)
+	else if(args.len >= 3)
+		source.Connect(args[1],args[2],args[3])
+	else
+		source.Message("Invalid number of arguments.")
+		return
+
 /datum/command/ip
 	names = list("ip")
 /datum/command/ip/Run(var/list/args)

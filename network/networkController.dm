@@ -20,6 +20,7 @@
 						world << "waiting for system"
 						sleep(10)
 				www.GetAdressFrom(router,Node:system)
+				router.nodes[Node:system:this_ip:String()] = Node:system
 				world.log << "System device added"
 			else
 				world.log << "NO router found for NET"

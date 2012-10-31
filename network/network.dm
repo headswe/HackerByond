@@ -14,11 +14,6 @@ datum/www/
 	sub_3 = z
 	sub_4 = k
 	src.source = source
-/datum/ip/proc/isLAN(var/datum/ip/p)
-	if(sub_1 == p.sub_1 && sub_2 == p.sub_2 && p.sub_3 == sub_3)
-		return 1
-	else
-		return 0
 /datum/ip/proc/GetNewIP()
 	if(sub_4 < 255)
 		var/datum/ip/K = new /datum/ip(sub_1,sub_2,sub_3,sub_4+count,src.source)
@@ -32,8 +27,7 @@ datum/www/
 		world << "OS IS NULL"
 		return
 	if(!istype(X.holder,/obj/device/router))
-		var/datum/UnifiedNetwork/A = X.holder.Networks[/obj/cabling/Network]
-		var/obj/device/router/R = FindRouter(A)
+		var/obj/device/router/R = FindRouter(X.holder)
 		if(!R)
 			world << "NO ROUTER"
 			return
@@ -50,15 +44,17 @@ datum/www/
 	return IP
 /datum/www/proc/GetAdressFrom(var/obj/device/router/r ,var/datum/os/X)
 	if(!r.system.this_ip)
-		world.log << "either X dosent exist or R.system.this_ip is null"
+		world.log << "R.system.this_ip is null"
+		return
+	if(!X)
+		world.log << "X dosent exist"
 		return
 	X.this_ip = r.system.this_ip.GetNewIP()
 	r.nodes[X.this_ip.String()] = X
-/datum/www/proc/FindRouter(var/datum/UnifiedNetwork/A)
-	for(var/atom/B in A.Nodes)
-		if(istype(B,/obj/device/router))
-			return B
-
+proc/FindRouter(var/obj/device/A)
+	var/datum/UnifiedNetwork/B = A.Networks[/obj/cabling/Network]
+	world << "IMMA HERE"
+	return B.Controller:router
 /datum/www/proc/RegisterDomain(var/datum/os/X,path)
 	if(!X.this_ip)
 		return 0
@@ -68,13 +64,16 @@ datum/www/
 	nodes[path] = X
 	X.hostnames += path
 /datum/www/proc/ConnectTo(var/datum/ip/I,var/datum/os/client)
-	if(I && I.isLAN(client.this_ip))
+	if(I && FindRouter(client.holder))
 		client.Message("Connecting to [I.String()]")
-		sleep(30)
-		var/obj/device/router/R = I.source:
+		sleep(1)
+		var/obj/device/router/R = FindRouter(client.holder)
 		if(!R)
+			client.Message("Connection refused")
+			client.Message("Connection attempt failed..")
 			return
 		var/datum/os/server = R.nodes[I.String()]
+		world << "GETTING OS"
 		if(!server)
 			client.Message("Connection refused")
 			client.Message("Connection attempt failed..")

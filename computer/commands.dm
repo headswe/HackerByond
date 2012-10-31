@@ -557,10 +557,11 @@ datum/os/proc/CopyFile(var/datum/dir/A,var/datum/dir/B)
 			X.holder = B
 			B.contents += X
 datum/os/proc/Connect(ip,user,pass)
+	var/datum/ip/I = string2ip(ip)
 	if(user && pass)
-		www.ConnectTo_s(ip,src,user,pass)
+		www.ConnectTo_s(I,src,user,pass)
 	else
-		www.ConnectTo(ip,src)
+		www.ConnectTo(I,src)
 
 datum/os/proc/BG(path)
 	var/datum/dir/file/program/X = FindProg(path)

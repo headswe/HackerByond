@@ -9,3 +9,6 @@ mob/proc/SetActiveSystem(var/datum/os/sys)
 	current = sys
 	current.mob_users += src
 	winshow(src.client,"console",1)
+mob/verb/say(msg as text)
+	for(var/mob/A in viewers())
+		A << "[src.name] said, \"[msg]\""

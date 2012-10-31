@@ -65,3 +65,8 @@ proc/MasterProcess()
 			net.Controller.Process()
 	sleep(1)
 	spawn() MasterProcess()
+
+proc/string2ip(var/ip)
+	var/list/subs = dd_text2list(ip,".")
+	var/datum/ip/A = new(subs[1],subs[2],subs[3],subs[4],null)
+	return A

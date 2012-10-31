@@ -164,6 +164,7 @@
 #include "world\debug_vars.dm"
 #include "world\modify_vars.dm"
 #include "world\router.dm"
+#include "world\TextHandling.dm"
 #include "world\world.dm"
 #include "world\map.dmm"
 // END_INCLUDE
