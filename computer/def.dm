@@ -34,6 +34,7 @@ mob/verb/cmd(msg as text)
 	var/list/tasks = list()
 	var/list/ip_list = list()
 	var/list/config = list("webserver" = 0,motd = "Welcome to the server")
+	var/list/screen = list()
 /datum/os/Del()
 	for(var/datum/praser/P in process)
 		del(P)
@@ -87,5 +88,9 @@ mob/verb/cmd(msg as text)
 			return Y
 
 /datum/os/proc/Message(var/msg)
+	screen.Add(msg)
 	for(var/mob/A in src.mob_users)
-		A.client << output(msg, "console.text")
+		if(get_dist(A, holder) <= 1)
+			A.client << output(msg, "console.text")
+		else
+			winshow(A.client,"console",0)

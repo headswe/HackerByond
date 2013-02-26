@@ -940,3 +940,16 @@
 	if(source.this_ip == null)
 		GetAdress(source.holder)
 	source.Message(source.this_ip.String()+":[source.this_ip.count]")
+
+//clear, clears the screen//
+
+/datum/command/clear
+	names = list("cls")
+	help_text = "help {CLS}: Clears the screen of all text."
+/datum/command/clear/Run(var/list/args)
+	source.screen = list()
+	for(var/mob/A in source.mob_users)
+		A.client << output(null, "console.text")
+
+//End aliases
+
